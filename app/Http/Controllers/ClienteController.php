@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ClienteStoreRequest;
 use App\Models\Clientes;
 use Illuminate\Http\Request;
 use TheSeer\Tokenizer\Exception;
@@ -17,43 +18,12 @@ class ClienteController extends Controller
         return Clientes::all();
     }
 
-    public function clienteCadastro(Request $request)
+    public function clienteCadastro(ClienteStoreRequest $request)
     {
         try {
 
-            $cliente = new Clientes;
-
-            if(!empty($request->nome) && isset($request->nome)){
-
-                $cliente->nome = $request->nome;
-
-            }else{
-
-                return response()->json([
-                    "message" => "Nome do cliente é obrigatório"
-                ], 400);
-
-            }
-
-            if(!empty($request->telefone) && isset($request->telefone)){
-                if (strlen($request->telefone) == 11) {
-
-                $cliente->telefone = $request->telefone;
-
-                }else{
-
-                    return response()->json([
-                        "message" => "Número de telefone inválido, não esqueça de usar o DDD"
-                    ], 400);
-
-                }
-            }else{
-
-                return response()->json([
-                    "message" => "Telefone do cliente é obrigatório"
-                ], 400);
-
-            }
+            $cliente = new Clientes($request->validated());
+            $cliente->nome = $request->nome;
 
             if(!empty($request->cpf) && isset($request->cpf)){
 
@@ -69,37 +39,11 @@ class ClienteController extends Controller
 
                 }
 
-            }else{
-
-                return response()->json([
-                    "message" => "CPF do cliente é obrigatório"
-                ], 400);
-
             }
 
-            if(!empty($request->placa_carro) && isset($request->placa_carro)){
-                if (strlen($request->placa_carro) == 7) {
-
-                $cliente->placa_carro = $request->placa_carro;
-
-                }else{
-
-                    return response()->json([
-                        "message" => "Placa do carro está incorreta!"
-                    ], 400);
-
-                }
-
-            }else{
-
-                return response()->json([
-                    "message" => "Placa do carro do cliente é obrigatório"
-                ], 400);
-
-            }
-
-            $cliente->telefone = $this->mask($cliente->telefone,'(##)#####-####');
-            $cliente->placa_carro = $this->formataPlacadeCarro($cliente->placa_carro);
+            $cliente->telefone = $this->mask($request->telefone,'(##)#####-####');
+            $cliente->cpf = $this->mask($request->cpf,'###.###.###-##');
+            $cliente->placa_carro = $this->formataPlacadeCarro($request->placa_carro);
 
             $cliente->save();
 
@@ -150,17 +94,33 @@ class ClienteController extends Controller
         }
      }
 
-      public function atualizarCliente(Request $request, $id)
+      public function atualizarCliente(Request $request, $id, ClienteStoreRequest $requestCliente)
     {
         try{
 
-            if (Clientes::where('id', $id)->exists()) {
+            if (Clientes::where('id', $id)->exists() && new Clientes($requestCliente->validated())) {
                 $cliente = Clientes::find($id);
 
                 $cliente->nome = is_null($request->nome) ? $cliente->nome : $request->nome;
                 $cliente->telefone = is_null($request->telefone) ? $cliente->telefone : $this->mask($request->telefone,'(##)#####-####');
-                $cliente->cpf = is_null($request->cpf) ? $cliente->cpf : $request->cpf;
-                $cliente->placa_carro = is_null($request->placa_carro) ? $cliente->placa_carro : $this->formataPlacadeCarro($cliente->placa_carro);
+
+                if(!empty($request->cpf) && isset($request->cpf)){
+
+                    if($this->validaCPF($request->cpf) == true || $this->validaCPF($cliente->cpf)){
+
+                        $cliente->cpf = is_null($request->cpf) ? $cliente->cpf : $this->mask($request->cpf,'###.###.###-##')                        ;
+
+                    }else{
+
+                        return response()->json([
+                            "message" => "CPF com números inválidos"
+                        ], 400);
+
+                    }
+
+                }
+
+                $cliente->placa_carro = is_null($request->placa_carro) ? $cliente->placa_carro : $this->formataPlacadeCarro($request->placa_carro);
 
                 $cliente->save();
 

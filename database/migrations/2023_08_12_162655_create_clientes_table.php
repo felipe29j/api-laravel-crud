@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('nome');
             $table->string('telefone');
-            $table->bigInteger('cpf');
+            $table->string('cpf');
             $table->string('placa_carro');
             $table->timestamps();
         });
