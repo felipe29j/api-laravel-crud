@@ -134,7 +134,7 @@ class ClienteController extends Controller
                 $cliente->nome = is_null($request->nome) ? $cliente->nome : $request->nome;
                 $cliente->telefone = is_null($request->telefone) ? $cliente->telefone : $this->mask($request->telefone,'(##)#####-####');
 
-                if(!empty($request->cpf) && isset($request->cpf)){
+                if(!empty($request->cpf) && isset($request->cpf) || !empty($cliente->cpf) && isset($cliente->cpf)){
 
                     if($this->validaCPF($request->cpf) == true || $this->validaCPF($cliente->cpf)){
 
