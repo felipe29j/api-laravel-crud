@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClienteStoreRequest;
 use App\Models\Clientes;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Validation\ValidationException;
 use TheSeer\Tokenizer\Exception;
 
 class ClienteController extends Controller
@@ -51,11 +54,21 @@ class ClienteController extends Controller
                 "message" => "Cliente Cadastrado com Sucesso!"
             ], 201);
 
-        }catch (Exception $e) {
+        } catch (ValidationException $e) {
 
-            echo 'Exceção capturada: ',  $e->getMessage(), "\n";
+            return response()->json([
+                "message" => "Erro de validação",
+                "errors" => $e->errors()
+            ], 400);
+
+        } catch (QueryException $e) {
+
+            return response()->json([
+                "message" => "Erro no servidor de banco de dados",
+            ], 500);
 
         }
+
     }
 
       public function buscarClientes()
@@ -65,12 +78,20 @@ class ClienteController extends Controller
             $cliente = Clientes::get()->toJson(JSON_PRETTY_PRINT);
             return response($cliente, 200);
 
-        }catch (Exception $e) {
+        } catch (ValidationException $e) {
 
-            echo 'Exceção capturada: ',  $e->getMessage(), "\n";
+            return response()->json([
+                "message" => "Erro de validação",
+                "errors" => $e->errors()
+            ], 400);
+
+        } catch (QueryException $e) {
+
+            return response()->json([
+                "message" => "Erro no servidor de banco de dados",
+            ], 500);
 
         }
-
       }
 
 
@@ -87,9 +108,18 @@ class ClienteController extends Controller
                 ], 404);
             }
 
-        }catch (Exception $e) {
+        } catch (ValidationException $e) {
 
-            echo 'Exceção capturada: ',  $e->getMessage(), "\n";
+            return response()->json([
+                "message" => "Erro de validação",
+                "errors" => $e->errors()
+            ], 400);
+
+        } catch (QueryException $e) {
+
+            return response()->json([
+                "message" => "Erro no servidor de banco de dados",
+            ], 500);
 
         }
      }
@@ -134,11 +164,21 @@ class ClienteController extends Controller
 
             }
 
-        }catch (Exception $e) {
+        } catch (ValidationException $e) {
 
-            echo 'Exceção capturada: ',  $e->getMessage(), "\n";
+            return response()->json([
+                "message" => "Erro de validação",
+                "errors" => $e->errors()
+            ], 400);
+
+        } catch (QueryException $e) {
+
+            return response()->json([
+                "message" => "Erro no servidor de banco de dados",
+            ], 500);
 
         }
+
     }
 
     public function excluirCliente ($id)
@@ -158,9 +198,18 @@ class ClienteController extends Controller
               ], 404);
             }
 
-        }catch (Exception $e) {
+        } catch (ValidationException $e) {
 
-             echo 'Exceção capturada: ',  $e->getMessage(), "\n";
+            return response()->json([
+                "message" => "Erro de validação",
+                "errors" => $e->errors()
+            ], 400);
+
+        } catch (QueryException $e) {
+
+            return response()->json([
+                "message" => "Erro no servidor de banco de dados",
+            ], 500);
 
         }
 
@@ -182,18 +231,26 @@ class ClienteController extends Controller
               ], 404);
             }
 
-        }catch (Exception $e) {
+        } catch (ValidationException $e) {
 
-            echo 'Exceção capturada: ',  $e->getMessage(), "\n";
+            return response()->json([
+                "message" => "Erro de validação",
+                "errors" => $e->errors()
+            ], 400);
+
+        } catch (QueryException $e) {
+
+            return response()->json([
+                "message" => "Erro no servidor de banco de dados",
+            ], 500);
 
         }
-
       }
 
 
 
 
-      function validaCPF($cpf)
+      private function validaCPF($cpf)
       {
 
         // Extrai somente os números
@@ -223,7 +280,7 @@ class ClienteController extends Controller
 
     }
 
-    function mask($val, $mask)
+    private function mask($val, $mask)
     {
         $maskared = '';
         $k = 0;
@@ -243,7 +300,7 @@ class ClienteController extends Controller
     }
 
 
-    function formataPlacadeCarro($placa)
+    private function formataPlacadeCarro($placa)
     {
         $tam	= strlen($placa);
         $primeiraParte = substr($placa,0,3);
