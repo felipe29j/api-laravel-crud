@@ -39,7 +39,7 @@ Isso permite que a aplicação seja executada em um container, eliminando a nece
 localhost:8000
 
 ## Passo 7
-7. Dentro do diretório do projeto, execute o seguinte comando para executar as migrações do banco de dados:
+7. Dentro do diretório do projeto abra o terminal cmd ou no próprio vs code, execute o seguinte comando para executar as migrações do banco de dados:
 php artisan migrate
 
 Isso criará automaticamente a tabela com as colunas necessárias na base de dados.
