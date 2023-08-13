@@ -74,6 +74,7 @@ get : http://localhost:8000/api/consulta/final-placa/7
 lembrando de utilizar o postman ou o insominia e de colocar os seguintes headers para melhor visualização:
 
 Content-Type: application/json
+
 Accept: application/json
 
 Agora você está pronto para começar a utilizar a API e realizar testes!
