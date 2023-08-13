@@ -56,5 +56,14 @@ localhost:8000
 http://localhost:8000/api
 
 Lembre-se de adicionar o sufixo "/api" à URL base.
+entao teremos os exemplos de acesso a cada metodo da api:
+
+get : http://localhost:8000/api/cliente
+get : http://localhost:8000/api/cliente/1
+post : http://localhost:8000/api/clienteCadastro
+put : http://localhost:8000/api/cliente/1
+delete : http://localhost:8000/api/cliente/1
+get : http://localhost:8000/api/consulta/final-placa/7
+
 
 Agora você está pronto para começar a utilizar a API e realizar testes!
