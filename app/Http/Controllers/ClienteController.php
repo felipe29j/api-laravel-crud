@@ -75,7 +75,9 @@ class ClienteController extends Controller
       {
         try{
 
-            $cliente = Clientes::get()->toJson(JSON_PRETTY_PRINT);
+            $cliente = Clientes::get();
+            $cliente->toJson(JSON_PRETTY_PRINT);
+
             return response($cliente, 200);
 
         } catch (ValidationException $e) {
@@ -100,8 +102,10 @@ class ClienteController extends Controller
         try{
 
             if (Clientes::where('id', $id)->exists()) {
-                $student = Clientes::where('id', $id)->get()->toJson(JSON_PRETTY_PRINT);
-                return response($student, 200);
+                $cliente = Clientes::where('id', $id)->get();
+                $cliente->toJson(JSON_PRETTY_PRINT);
+
+                return response($cliente, 200);
             } else {
                 return response()->json([
                 "message" => "Cliente não encontrado!"
